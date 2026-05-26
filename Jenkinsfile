@@ -6,7 +6,7 @@ pipeline {
         IMAGE_NAME = "calcwebappmvn:${BUILD_NUMBER}"
     }
     tools {
-        maven 'xyz-maven'
+        maven 'my-maven'
     }
 
     stages {
