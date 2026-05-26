@@ -1,2 +1,1 @@
-NEW LINE WAS ADDED BY ME 
-THIRD LINE WAS ADDED BY ME.
+Now i am adding fouth line in this file by me
