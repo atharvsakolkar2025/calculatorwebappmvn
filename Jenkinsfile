@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'ag-2'
+        label 'linux'
     }
     environment {
         IMAGE_NAME = "calcwebappmvn:${BUILD_NUMBER}"
