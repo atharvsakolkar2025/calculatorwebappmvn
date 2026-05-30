@@ -1,3 +1,5 @@
+// tf file for eks cluster
+
 terraform {
   required_version = ">= 1.3"
   required_providers {
@@ -9,14 +11,14 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = "us-west-2"
 }
 data "aws_vpc" "default" { // Fetch default VPC
   default = true
 }
 variable "cluster_name" { // Variable for cluster name
   type    = string
-  default = "jenkins-cluster"
+  default = "my-cluster"
 
 }
 
@@ -111,4 +113,5 @@ output "cluster_name" { // Output for cluster name
 output "cluster_endpoint" {    //  Output for cluster endpoint
   value = aws_eks_cluster.mycluster.endpoint
 }
+
 
