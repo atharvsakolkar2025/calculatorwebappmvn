@@ -19,6 +19,11 @@ pipeline {
     stages {
         stage('Terraform Init') {
             steps {
+                sh 'terraform init'
+            }
+        }
+         stage('Terraform fmt-validate') {
+            steps {
                 sh '''
                     cd terraform
                     terraform init
@@ -47,24 +52,3 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                sh '''
-                    cd terraform
-                    terraform apply -auto-approve
-                '''
-            }
-        }
-
-        stage('Terraform Destroy') {
-            when {
-                expression { return params.DESTROY == true }
-            }
-            steps {
-                sh '''
-                    cd terraform
-                    terraform destroy -auto-approve
-                '''
-            }
-        }
-    }
-}
-
