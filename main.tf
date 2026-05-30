@@ -11,14 +11,14 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-west-2"
+  region = "us-east-1"
 }
 data "aws_vpc" "default" { // Fetch default VPC
   default = true
 }
 variable "cluster_name" { // Variable for cluster name
   type    = string
-  default = "my-cluster"
+  default = "jenkins-cluster"
 
 }
 
