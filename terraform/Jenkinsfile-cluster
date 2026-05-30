@@ -6,7 +6,7 @@ pipeline {
         my_aws_access= credentials('AWS-CRED')
     }
     tools {
-        terraform 'tf-install'
+        terraform 'my-terraform'
     }
     stages {
         stage('Terraform Init') {
