@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent 'linux'
     tools {
         terraform 'Terraform-1.5.7'   // Must match Global Tool Configuration
         maven 'xyz-maven'             // Your Maven installation
@@ -71,14 +71,14 @@ pipeline {
                 sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 193619625891.dkr.ecr.us-east-1.amazonaws.com'
                 echo "Logged in to AWS ECR Successfully!!"
 
-                sh 'docker tag ${IMAGE_NAME} 964742912902.dkr.ecr.us-west-2.amazonaws.com/atharv:${BUILD_NUMBER}'
+                sh 'docker tag ${IMAGE_NAME} 193619625891.dkr.ecr.us-east-1.amazonaws.com/atharv:${BUILD_NUMBER}'
                 echo "Docker Image Tagged Successfully!!"
             }
         }
 
         stage('Push to ECR') {
             steps {
-                sh 'docker push 964742912902.dkr.ecr.us-west-2.amazonaws.com/atharv/calculator:${BUILD_NUMBER}'
+                sh 'docker push 193619625891.dkr.ecr.us-east-1.amazonaws.com/atharv/calculator:${BUILD_NUMBER}'
                 echo "Docker Image Pushed to ECR Successfully!!"
             }
         }
@@ -120,7 +120,7 @@ pipeline {
 
         stage('kubeconfig setup') {
             steps {
-                sh 'aws eks update-kubeconfig --region us-west-2 --name my-cluster'
+                sh 'aws eks update-kubeconfig --region us-east-1 --name my-cluster'
                 echo "Kubeconfig setup completed successfully!!"
             }
         }
