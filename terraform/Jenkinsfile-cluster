@@ -1,21 +1,13 @@
 pipeline {
     agent {
-        label 'linux'
-    }
-
-    tools {
-        terraform 'my-terraform'   // Terraform tool configured in Jenkins
-    }
-
+        label 'linux' 
+        }
     environment {
-        // AWS credentials injected from Jenkins Credentials Manager
-        my_aws_access = credentials('AWS-CRED')
+        my_aws_access= credentials('my-aws-cred')
     }
-
-    parameters {
-        booleanParam(name: 'DESTROY', defaultValue: false, description: 'Set to true to destroy resources')
+    tools {
+        terraform 'tf-install'
     }
-
     stages {
         stage('Terraform Init') {
             steps {
@@ -25,30 +17,21 @@ pipeline {
          stage('Terraform fmt-validate') {
             steps {
                 sh '''
-                    cd terraform
-                    terraform init
+                terraform fmt
+                terraform validate
                 '''
             }
         }
-
-        stage('Terraform Fmt & Validate') {
+         stage('Terraform plan') {
             steps {
-                sh '''
-                    cd terraform
-                    terraform fmt -check
-                    terraform validate
-                '''
+                sh 'terraform plan'
             }
         }
-
-        stage('Terraform Plan') {
+         stage('Terraform APPLY') {
             steps {
-                sh '''
-                    cd terraform
-                    terraform plan
-                '''
+                sh 'terraform apply -auto-approve'
             }
         }
+    }
+}
 
-        stage('Terraform Apply') {
-            steps {
