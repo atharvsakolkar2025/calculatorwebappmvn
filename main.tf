@@ -24,11 +24,15 @@ variable "cluster_name" { // Variable for cluster name
 
 data "aws_subnets" "default" { // Fetch  all subnets in the default VPC
   filter {
-    name   = "vpc-id"                  //   Filter by VPC ID
-    values = [data.aws_vpc.default.id] // Filter by default VPC ID
+    name   = "vpc-id" //   Filter by VPC ID
+    values = [data.aws_vpc.default.id]
+  } // Filter by availability zone to ensure we get subnets in different zones for high availability
+  filter {
+    name   = "availability-zone"
+    values = ["us-east-1a", "us-east-1b", "us-east-1c"] // Specify availability zones
   }
-
 }
+
 
 // variable for environment
 variable "environment" {
