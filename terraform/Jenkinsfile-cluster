@@ -1,37 +1,70 @@
 pipeline {
     agent {
-        label 'linux' 
-        }
-    environment {
-        my_aws_access= credentials('AWS-CRED')
+        label 'linux'
     }
+
     tools {
-        terraform 'my-terraform'
+        terraform 'my-terraform'   // Terraform tool configured in Jenkins
     }
+
+    environment {
+        // AWS credentials injected from Jenkins Credentials Manager
+        my_aws_access = credentials('AWS-CRED')
+    }
+
+    parameters {
+        booleanParam(name: 'DESTROY', defaultValue: false, description: 'Set to true to destroy resources')
+    }
+
     stages {
         stage('Terraform Init') {
             steps {
-	        sh 'cd terraform'
-                sh 'terraform init'
-            }
-        }
-         stage('Terraform fmt-validate') {
-            steps {
                 sh '''
-                terraform fmt
-                terraform validate
+                    cd terraform
+                    terraform init
                 '''
             }
         }
-         stage('Terraform plan') {
+
+        stage('Terraform Fmt & Validate') {
             steps {
-                sh 'terraform plan'
+                sh '''
+                    cd terraform
+                    terraform fmt -check
+                    terraform validate
+                '''
             }
         }
-         stage('Terraform APPLY') {
+
+        stage('Terraform Plan') {
             steps {
-                sh 'terraform apply -auto-approve'
+                sh '''
+                    cd terraform
+                    terraform plan
+                '''
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                sh '''
+                    cd terraform
+                    terraform apply -auto-approve
+                '''
+            }
+        }
+
+        stage('Terraform Destroy') {
+            when {
+                expression { return params.DESTROY == true }
+            }
+            steps {
+                sh '''
+                    cd terraform
+                    terraform destroy -auto-approve
+                '''
             }
         }
     }
 }
+
