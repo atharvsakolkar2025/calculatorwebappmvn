@@ -1,9 +1,9 @@
 pipeline {
     agent {
-        label 'ag-2' 
+        label 'linux' 
         }
     environment {
-        my_aws_access= credentials('my-aws-cred')
+        my_aws_access= credentials('AWS-CRED')
     }
     tools {
         terraform 'tf-install'

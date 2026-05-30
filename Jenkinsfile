@@ -4,7 +4,7 @@ pipeline {
     }
     environment {
         IMAGE_NAME = "calcwebappmvn:${BUILD_NUMBER}"
-        my_aws_access = credentials('my-aws-cred')
+        my_aws_access = credentials('AWS-CRED')
     }
     tools {
         maven 'my-maven'
@@ -14,7 +14,7 @@ pipeline {
 
         stage('Git Checkout') {
             steps {
-                git url: 'https://github.com/mayur-z/calcwebappmvn.git'
+                git url: 'https://github.com/atharvsakolkar2025/calculatorwebappmvn'
                 echo "Code Checked-out Successfully!!";
                 sh 'ls -la'
             }
@@ -73,10 +73,10 @@ pipeline {
 
         stage('ECRLogin') {
             steps {
-                sh 'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 964742912902.dkr.ecr.us-west-2.amazonaws.com'
+                sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 193619625891.dkr.ecr.us-east-1.amazonaws.com'
                 echo "Logged in to AWS ECR Successfully!!"
 
-                sh 'docker tag ${IMAGE_NAME} 964742912902.dkr.ecr.us-west-2.amazonaws.com/dev/calculator:${BUILD_NUMBER}'
+                sh 'docker tag ${IMAGE_NAME} 964742912902.dkr.ecr.us-west-2.amazonaws.com/atharv:${BUILD_NUMBER}'
                 echo "Docker Image Tagged Successfully!!"
                 sh 'docker images'
             }
@@ -84,7 +84,7 @@ pipeline {
 
         stage('Push to ECR') {
             steps {
-                sh 'docker push 964742912902.dkr.ecr.us-west-2.amazonaws.com/dev/calculator:${BUILD_NUMBER}'
+                sh 'docker push 964742912902.dkr.ecr.us-west-2.amazonaws.com/atharv/calculator:${BUILD_NUMBER}'
                 echo "Docker Image Pushed to ECR Successfully!!"
             }
         }
