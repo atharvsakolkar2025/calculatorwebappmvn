@@ -7,6 +7,11 @@ pipeline {
         choice(name: 'ENVIRONMENT', choices: ['dev', 'staging', 'prod'], description: 'Select environment')
         choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Choose Terraform action')
     }
+
+    environment {
+        my_aws_access = credentials('AWS-CRED')
+    }
+    
     stages {
         stage('Terraform Init') {
             steps {

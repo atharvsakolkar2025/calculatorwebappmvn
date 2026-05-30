@@ -10,6 +10,7 @@ pipeline {
         booleanParam(name: 'DESTROY', defaultValue: false, description: 'Run terraform destroy?')
     }
     environment {
+        my_aws_access = credentials('AWS-CRED')
         IMAGE_NAME = "calcwebappmvn:${BUILD_NUMBER}"
     }
     stages {
