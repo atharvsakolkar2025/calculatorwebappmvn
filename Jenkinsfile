@@ -1,8 +1,8 @@
 pipeline {
-    agent 'linux'
+    agent { label 'linux' } // Use a Jenkins agent with Docker capabilities
     tools {
-        terraform 'Terraform-1.5.7'   // Must match Global Tool Configuration
-        maven 'xyz-maven'             // Your Maven installation
+        // terraform 'Terraform-1.5.7'   // Must match Global Tool Configuration
+        maven 'my-maven'             // Your Maven installation
     }
     parameters {
         choice(name: 'ENVIRONMENT', choices: ['dev', 'staging', 'prod'], description: 'Select environment to deploy')
