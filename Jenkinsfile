@@ -1,21 +1,23 @@
 pipeline {
-    agent {
-        label 'linux'
+    agent any
+    tools {
+        terraform 'Terraform-1.5.7'   // Must match Global Tool Configuration
+        maven 'xyz-maven'             // Your Maven installation
+    }
+    parameters {
+        choice(name: 'ENVIRONMENT', choices: ['dev', 'staging', 'prod'], description: 'Select environment to deploy')
+        booleanParam(name: 'APPLY', defaultValue: true, description: 'Run terraform apply?')
+        booleanParam(name: 'DESTROY', defaultValue: false, description: 'Run terraform destroy?')
     }
     environment {
         IMAGE_NAME = "calcwebappmvn:${BUILD_NUMBER}"
-        my_aws_access = credentials('AWS-CRED')
     }
-    tools {
-        maven 'my-maven'
-    }
-
     stages {
 
         stage('Git Checkout') {
             steps {
                 git url: 'https://github.com/atharvsakolkar2025/calculatorwebappmvn'
-                echo "Code Checked-out Successfully!!";
+                echo "Code Checked-out Successfully!!"
                 sh 'ls -la'
             }
         }
@@ -46,25 +48,17 @@ pipeline {
                 }
             }
         }
- 
+
         stage('Package Application .war') {
             steps {
-                sh 'ls -la'
-                sh 'mvn clean'
-                sh 'mvn package'
-                echo "Maven Package Goal Executed Successfully!";
+                sh 'mvn clean package'
+                echo "Maven Package Goal Executed Successfully!"
                 sh 'ls -la'
             }
         }
+
         stage('docker image build') {
             steps {
-                sh 'which docker'
-                sh 'docker --version'
-                sh 'docker ps'
-                sh 'docker images'
-                //sh 'docker rmi -f ${docker images -q}'
-                //docker system prune -a
-                // sh 'docker build -t calcwebappmvn:v1 .' 
                 sh 'docker build -t ${IMAGE_NAME} .'
                 echo "Docker Image Built Successfully!!"
                 sh 'docker images'
@@ -78,7 +72,6 @@ pipeline {
 
                 sh 'docker tag ${IMAGE_NAME} 964742912902.dkr.ecr.us-west-2.amazonaws.com/atharv:${BUILD_NUMBER}'
                 echo "Docker Image Tagged Successfully!!"
-                sh 'docker images'
             }
         }
 
@@ -89,6 +82,40 @@ pipeline {
             }
         }
 
+        stage('Terraform Init') {
+            steps {
+                sh '''
+                    cd terraform
+                    terraform init
+                    terraform workspace select ${ENVIRONMENT} || terraform workspace new ${ENVIRONMENT}
+                '''
+            }
+        }
+
+        stage('Terraform Apply') {
+            when {
+                expression { return params.APPLY == true }
+            }
+            steps {
+                sh '''
+                    cd terraform
+                    terraform plan -var="env=${ENVIRONMENT}" -out=tfplan
+                    terraform apply -auto-approve tfplan
+                '''
+            }
+        }
+
+        stage('Terraform Destroy') {
+            when {
+                expression { return params.DESTROY == true }
+            }
+            steps {
+                sh '''
+                    cd terraform
+                    terraform destroy -auto-approve -var="env=${ENVIRONMENT}"
+                '''
+            }
+        }
 
         stage('kubeconfig setup') {
             steps {
@@ -99,30 +126,10 @@ pipeline {
 
         stage('get all resources') {
             steps {
-
                 sh 'kubectl get all'
                 echo "Verified access to EKS cluster successfully!!"
-
-                //sh 'kubectl apply -f k8s-deployment.yaml'
-                //echo "Application Deployed to EKS Successfully!!"
             }
-        }
-
-
-
-
-
-
-    }
-
-
-
-    post {
-        success {
-            echo 'pipeline is successful'
-        }
-        failure {
-            echo 'pipeline is FAILED'
         }
     }
 }
+
