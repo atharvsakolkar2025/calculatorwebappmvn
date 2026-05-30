@@ -30,6 +30,12 @@ data "aws_subnets" "default" { // Fetch  all subnets in the default VPC
 
 }
 
+// variable for environment
+variable "environment" {
+  type    = list(string)
+  default = ["dev", "staging","prod"] // Default environments
+}
+
 resource "aws_iam_role" "eks_cluster_role" { // IAM role for EKS cluster
   name = "eks-cluster-role"   // Name of the cluster role
 
