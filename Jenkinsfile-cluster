@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Terraform Init') {
             steps {
-                sh 'cd terraform && terraform init'
+                sh 'terraform init'
             }
         }
         stage('Terraform Apply') {
@@ -18,7 +18,7 @@ pipeline {
                 expression { return params.ACTION == 'apply' }
             }
             steps {
-                sh "cd terraform && terraform apply -var environment=${params.ENVIRONMENT} -auto-approve"
+                sh "terraform apply -var environment=${params.ENVIRONMENT} -auto-approve"
             }
         }
         stage('Terraform Destroy') {
@@ -26,7 +26,7 @@ pipeline {
                 expression { return params.ACTION == 'destroy' }
             }
             steps {
-                sh "cd terraform && terraform destroy -var environment=${params.ENVIRONMENT} -auto-approve"
+                sh "terraform destroy -var environment=${params.ENVIRONMENT} -auto-approve"
             }
         }
     }
