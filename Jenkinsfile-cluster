@@ -1,38 +1,35 @@
 pipeline {
-    agent {
-        label 'linux' 
-        }
-    environment {
-        my_aws_access= credentials('AWS-CRED')
-    }
+    agent any
     tools {
         terraform 'my-terraform'
+    }
+    parameters {
+        choice(name: 'ENVIRONMENT', choices: ['dev', 'staging', 'prod'], description: 'Select environment')
+        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Choose Terraform action')
     }
     stages {
         stage('Terraform Init') {
             steps {
-	        sh ' cd terraform'
-                sh 'terraform init'
+                sh 'cd terraform && terraform init'
             }
         }
-         stage('Terraform fmt-validate') {
+        stage('Terraform Apply') {
+            when {
+                expression { return params.ACTION == 'apply' }
+            }
             steps {
-                sh '''
-                terraform fmt
-                terraform validate
-                '''
+                sh "cd terraform && terraform apply -var environment=${params.ENVIRONMENT} -auto-approve"
             }
         }
-         stage('Terraform plan') {
-            steps {
-                sh 'terraform plan'
+        stage('Terraform Destroy') {
+            when {
+                expression { return params.ACTION == 'destroy' }
             }
-        }
-         stage('Terraform APPLY') {
             steps {
-                sh 'terraform apply -auto-approve'
+                sh "cd terraform && terraform destroy -var environment=${params.ENVIRONMENT} -auto-approve"
             }
         }
     }
 }
+
 
