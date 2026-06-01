@@ -12,6 +12,7 @@ pipeline {
     environment {
         my_aws_access = credentials('AWS-CRED')
         IMAGE_NAME = "calcwebappmvn:v1"
+        cluster_name = "jenkins-cluster"
     }
     stages {
 
