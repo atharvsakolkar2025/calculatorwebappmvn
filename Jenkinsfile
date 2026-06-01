@@ -11,7 +11,7 @@ pipeline {
     }
     environment {
         my_aws_access = credentials('AWS-CRED')
-        IMAGE_NAME = "calcwebappmvn:${BUILD_NUMBER}"
+        IMAGE_NAME = "calcwebappmvn:v1"
     }
     stages {
 
