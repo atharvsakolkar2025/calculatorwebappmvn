@@ -83,41 +83,7 @@ pipeline {
             }
         }
 
-        stage('Terraform Init') {
-            steps {
-                sh '''
-                    cd terraform
-                    terraform init
-                    terraform workspace select ${ENVIRONMENT} || terraform workspace new ${ENVIRONMENT}
-                '''
-            }
-        }
-
-        stage('Terraform Apply') {
-            when {
-                expression { return params.APPLY == true }
-            }
-            steps {
-                sh '''
-                    cd terraform
-                    terraform plan -var="env=${ENVIRONMENT}" -out=tfplan
-                    terraform apply -auto-approve tfplan
-                '''
-            }
-        }
-
-        stage('Terraform Destroy') {
-            when {
-                expression { return params.DESTROY == true }
-            }
-            steps {
-                sh '''
-                    cd terraform
-                    terraform destroy -auto-approve -var="env=${ENVIRONMENT}"
-                '''
-            }
-        }
-
+        
         stage('kubeconfig setup') {
             steps {
                 sh 'aws eks update-kubeconfig --region us-east-1 --name my-cluster'
