@@ -86,7 +86,7 @@ pipeline {
         
         stage('kubeconfig setup') {
             steps {
-                sh 'aws eks update-kubeconfig --region us-east-1 --name my-cluster'
+                sh 'aws eks update-kubeconfig --region us-east-1 --name jenkins-cluster'
                 echo "Kubeconfig setup completed successfully!!"
             }
         }
