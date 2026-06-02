@@ -104,7 +104,9 @@ pipeline {
   stage('deploy to eks') {
             steps {
 
-                sh 'kubectl apply -f calc-deployment-svc.yaml'
+                sh 'kubectl apply -f deployment.yaml'
+                sh 'kubectl apply -f service.yaml'
+                echo "Deployment and Service applied successfully!!"
                 sh 'kubectl get all'
                 sh 'sleep 20'
                 sh 'kubectl get svc -o wide'
