@@ -84,7 +84,6 @@ pipeline {
             }
         }
 
-        
         stage('kubeconfig setup') {
             steps {
                 sh 'aws eks update-kubeconfig --region us-east-1 --name jenkins-cluster'
@@ -98,12 +97,9 @@ pipeline {
                 echo "Verified access to EKS cluster successfully!!"
             }
         }
-    }
-}
 
-  stage('deploy to eks') {
+        stage('deploy to eks') {
             steps {
-
                 sh 'kubectl apply -f deployment.yaml'
                 sh 'kubectl apply -f service.yaml'
                 echo "Deployment and Service applied successfully!!"
@@ -111,8 +107,7 @@ pipeline {
                 sh 'sleep 20'
                 sh 'kubectl get svc -o wide'
                 echo ".war application deployed to EKS cluster successfully!!"
-
-                //sh 'kubectl apply -f k8s-deployment.yaml'
-                //echo "Application Deployed to EKS Successfully!!"
             }
         }
+    }
+}
