@@ -27,5 +27,5 @@ spec:
             cpu: "250m"
             memory: "256Mi"
       imagePullSecrets:
-      - name: my-ecr-secret-cbz
+      - name: ecr-registry-secret
             
