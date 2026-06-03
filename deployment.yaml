@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: calc
-        image: 964742912902.dkr.ecr.us-west-2.amazonaws.com/dev/calculator:v1
+        image: 964742912902.dkr.ecr.us-west-2.amazonaws.com/dev/calculator:v2
         ports:
         - containerPort: 80
         resources:
