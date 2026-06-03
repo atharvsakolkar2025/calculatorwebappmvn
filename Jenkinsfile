@@ -11,7 +11,7 @@ pipeline {
     }
     environment {
         my_aws_access = credentials('AWS-CRED')
-        IMAGE_NAME = "calcwebappmvn:v1"
+        IMAGE_NAME = "calcwebappmvn:v2"
         cluster_name = "jenkins-cluster"
     }
     stages {
@@ -79,7 +79,7 @@ pipeline {
 
         stage('Push to ECR') {
             steps {
-                sh 'docker push 193619625891.dkr.ecr.us-east-1.amazonaws.com/atharv:${BUILD_NUMBER}'
+                sh 'docker push 193619625891.dkr.ecr.us-east-1.amazonaws.com/atharv:v2'
                 echo "Docker Image Pushed to ECR Successfully!!"
             }
         }
